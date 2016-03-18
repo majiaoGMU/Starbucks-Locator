@@ -23,7 +23,7 @@
     div#container{}
     div#header {background-color:#99bbbb;}
     div#menu {background-color:#ffff99;}
-    div#map {height:85%;width:55%;float:right;}
+  div#map {/*height:85%;width:55%;*/float:right;}
     div#content {float:left;}
     div#footer {background-color:#99bbbb;clear:both;text-align:center;}
       IMG.displayed {
@@ -67,12 +67,12 @@
   </style>
 </head>
 <body>
-  <div id="container">
+  <div id="container", class ="container-fluid">
   	<div id="header"><h1>Starbucks Loator</h1></div>
     <nav>
       <div id="menu">
         <ul class="nav nav-tabs" role="tablist">
-          <li role="presentation"><a href="WFS_clustermap.htm" aria-controls="Cluster Map" role="tab" data-toggle="tab">Overview</a></li>
+          <li role="presentation"><a href="overiew.htm" aria-controls="Cluster Map" role="tab" data-toggle="tab">Overview</a></li>
           <li role="presentation"><a href="search_popup_cluster.htm" aria-controls="Cluster Map" role="tab" data-toggle="tab">Search</a></li>
           <li role="presentation"><a href="googlemaps.htm" aria-controls="Google Map" role="tab" data-toggle="tab">Google Map</a></li>
           <li role="presentation" class="active"><a href="choropleth-popdensity.htm" aria-controls="Google Map" role="tab" data-toggle="tab">Choropleth Map</a></li>
@@ -82,7 +82,7 @@
       </div>
     </nav>
 
-    <div id="map">
+    <div id="map", class = "col-md-7">
       <script type="text/javascript" src="us-states.js"></script>
     	<script type="text/javascript">
 
@@ -211,8 +211,7 @@
 	<P></P>
 	<IMG src="http://104.236.0.92/Starbucks-Locator/upload/images/starbucks-coffee.jpg" alt="starbucks" style="width:200px;height:200px;">
 	<dl>
-  		<dt>s</dt>
-  		<dd></dd>
+  		<dt></dt>
 
 	</dl>
 	<P></P>
