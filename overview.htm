@@ -31,10 +31,20 @@
         margin: 0;
         padding: 0;
       }
+      IMG.displayed {
+      display: block;
+      margin-left: auto;
+      margin-right: auto }
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
       #map {
         height: 100%;
       }
   </style>
+
 </head>
 <body>
   <div id="container">
@@ -42,9 +52,9 @@
     <nav>
       <div id="menu">
         <ul class="nav nav-tabs" role="tablist">
-          <li role="presentation"><a href="overiew.htm" aria-controls="Cluster Map" role="tab" data-toggle="tab">Overview</a></li>
+          <li role="presentation" class="active"><a href="WFS_clustermap.htm" aria-controls="Cluster Map" role="tab" data-toggle="tab">Overview</a></li>
           <li role="presentation"><a href="search_popup_cluster.htm" aria-controls="Cluster Map" role="tab" data-toggle="tab">Search</a></li>
-          <li role="presentation" class="active"><a href="googlemaps.htm" aria-controls="Google Map" role="tab" data-toggle="tab">Google Map</a></li>
+          <li role="presentation"><a href="googlemaps.htm" aria-controls="Google Map" role="tab" data-toggle="tab">Google Map</a></li>
           <li role="presentation"><a href="choropleth-popdensity.htm" aria-controls="Google Map" role="tab" data-toggle="tab">Choropleth Map</a></li>
           <li role="presentation"><a href="statistic1.htm" aria-controls="Google Map" role="tab" data-toggle="tab">Ownership Type</a></li>
             <li role="presentation" ><a href="statistic2.htm" aria-controls="Google Map" role="tab" data-toggle="tab">Latitude Histogram</a></li>
@@ -52,31 +62,76 @@
       </div>
     </nav>
 
+
     <div id="map">
       <script>
-	      var map;
-        function initMap() {
-          map = new google.maps.Map(document.getElementById('map'), {
-            center: {lat: 37.7512, lng: -79},
-            zoom: 7
-          });
-        }
+    		//---SCOPE---
+    		//clustermakers
 
 
-      </script>
-      <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAHdxfG41pCT9oo4-KR1bzTS5QIr6SnZOA&callback=initMap"
-           async defer></script>
+        var Thunderforest_Landscape = L.tileLayer('http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png', {
+        	attribution: '&copy; <a href="http://www.opencyclemap.org">OpenCycleMap</a>, &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        });
+
+        var OpenStreetMap_BlackAndWhite = L.tileLayer('http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png', {
+    			maxZoom: 18,
+    			attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    		});
+
+    		var map = L.map('map', {
+    		    center: new L.LatLng(37.7512, -79),
+    		    zoom: 7,
+    		    layers: [Thunderforest_Landscape]
+    		});
+
+    		var owsrootUrl = 'http://104.236.0.92:8080/geoserver/test/ows';
+
+    		var coolPlaces = new L.markerClusterGroup();
+    		var defaultParameters = {
+    			service: 'WFS',
+    			version: '1.0.0',
+    			request: 'GetFeature',
+    			typeName: 'test:starbucks4',
+    			outputFormat: 'text/javascript',
+    			format_options: 'callback:loadGeoJson',
+    			SrsName: 'EPSG:4326' //change projection in Geoserver
+    		};
+
+    		var parameters = L.Util.extend(defaultParameters);
+    		var URL = owsrootUrl + L.Util.getParamString(parameters);
+
+    		var WFSLayer = null;
+    		$.ajax({
+    			url: URL,
+    			dataType: 'jsonp',
+    			jsonpCallback: 'loadGeoJson',
+    			success: function(response) {
+    				WFSLayer = L.geoJson(response).addTo(coolPlaces);
+    			}
+    		});
+    		coolPlaces.addTo(map);
+
+    		var baseMaps = {
+    			"Thunderforest_Landscape" : Thunderforest_Landscape,
+          		"OSM B&W" : OpenStreetMap_BlackAndWhite,
+    		};
+
+    		var overlayMaps = {
+    			"starbucks": coolPlaces
+    		};
+
+    		L.control.layers(baseMaps, overlayMaps).addTo(map);
+    	</script>
+
     </div>
-    <div id="content", center>
-	<P></P>
-	<IMG src="http://104.236.0.92/Starbucks-Locator/upload/images/starbucks-coffee.jpg" alt="starbucks" style="width:200px;height:200px;">
-	<P>___________________________</P>
-	<P></P>
-	<IMG src="http://104.236.0.92/Starbucks-Locator/upload/images/image.png" alt="image" style="width:180px;height:180px;">
-	<P></P>
-    </div>
-
+		<div id="content", center>
+			<P></P>
+		<IMG src="http://104.236.0.92/Starbucks-Locator/upload/images/starbucks-coffee.jpg" alt="starbucks" style="width:200px;height:200px;">
+		<P>___________________________</P>
+		<P></P>
+		<IMG src="http://104.236.0.92/Starbucks-Locator/upload/images/image.png" alt="image" style="width:180px;height:180px;">
+		<P></P>
+		</div>
     <div id="footer"><h3><small>@Jiao Ma &nbsp &nbsp GGS 692 Project</h3></small></div>
-
   </div>
 </body>
